@@ -30,6 +30,8 @@ enum Condition {
   gt = 'gt',
   gte = 'gte',
   ne = 'ne',
+  like = 'like',
+  ilike = 'ilike',
   default = '',
 }
 
@@ -204,7 +206,7 @@ export class Service {
       if (value === undefined || typeof value !== 'string') {
         continue
       }
-      const re = /_(lt|lte|gt|gte|ne)$/
+      const re = /_(lt|lte|gt|gte|ne|like|ilike)$/
       const reArr = re.exec(key)
       const op = reArr?.at(1)
       if (op && isCondition(op)) {
@@ -295,6 +297,26 @@ export class Service {
                   return itemValue !== (paramValue === 'true')
               }
               break
+            }
+            // item_like=value
+            case Condition.like: {
+              switch (typeof itemValue) {
+                case 'number':
+                  return String(itemValue).includes(paramValue)
+                case 'string':
+                  return itemValue.includes(paramValue)
+              }
+              return false
+            }
+            // item_ilike=value
+            case Condition.ilike: {
+              switch (typeof itemValue) {
+                case 'number':
+                  return String(itemValue).toLowerCase().includes(paramValue.toLowerCase())
+                case 'string':
+                  return itemValue.toLowerCase().includes(paramValue.toLowerCase())
+              }
+              return false
             }
             // item=value
             case Condition.default: {

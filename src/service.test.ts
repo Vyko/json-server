@@ -177,6 +177,21 @@ await test('find', async (t) => {
       res: [post2],
     },
     {
+      name: POSTS,
+      params: { "author.name_like": 'ba' },
+      res: [post2, post3],
+    },
+    {
+      name: POSTS,
+      params: { "author.name_like": 'az' },
+      res: [post3],
+    },
+    {
+      name: POSTS,
+      params: { "author.name_ilike": 'BA' },
+      res: [post2, post3],
+    },
+    {
       data: { posts: [post3, post1, post2] },
       name: POSTS,
       params: { _sort: 'views' },
